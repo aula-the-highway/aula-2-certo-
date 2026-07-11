@@ -1,0 +1,55 @@
+TECLA.EXE — Jogo de Digitação (Arcade Edition)
+================================================
+
+COMO JOGAR
+1. Extraia todos os arquivos deste ZIP em uma pasta (mantenha todos
+   juntos: index.html, style.css, db.js, character.js, levels.js e app.js).
+2. Dê dois cliques no arquivo "index.html" para abrir no seu navegador
+   (Chrome, Edge ou Firefox funcionam bem).
+3. Crie sua conta (usuário + senha) na aba "CRIAR CONTA".
+4. Monte seu avatar: escolha identidade, estilo de roupa (agora são 8:
+   Sportlife, Y2K, Streetwear, Coquette, Skatista, Dark Alt, Retro Gamer
+   e Kawaii), corte de cabelo, acessório, tom de pele e cor de cabelo.
+5. Vá em CONFIGURAÇÕES e ajuste a meta de PPM (palavras por minuto)
+   de acordo com seu nível atual.
+6. Jogue as 40 fases, divididas em 4 mundos (Fundamentos, Ritmo &
+   Pontuação, Fluência e Modo Elite), até o Boss Supremo final.
+7. Ganhe estrelas em cada fase e dispute o RANKING com outras contas
+   criadas no mesmo navegador.
+
+O QUE MUDOU NESTA VERSÃO
+- Banco de dados de verdade: o jogo agora usa IndexedDB (o banco de
+  dados embutido no navegador) para salvar contas e progresso, em vez
+  de um único bloco de texto em localStorage. Continua tudo local e
+  offline — não existe nenhum servidor externo. Se algum navegador
+  bloquear o IndexedDB, o jogo detecta isso automaticamente e usa
+  localStorage como reserva, sem travar.
+- Personagens muito mais variados: 8 estilos de roupa, 6 tons de pele,
+  8 cores de cabelo, 4 cortes de cabelo e 5 acessórios — milhares de
+  combinações possíveis. Tudo é desenhado em pixel art direto no
+  código (canvas), então continua funcionando 100% offline, sem
+  precisar baixar nenhuma imagem.
+- Visual mais "arcade": luzes de marquise piscando, fundo com grade
+  neon, fonte pixelada no estilo fliperama e mais brilho nos botões.
+- 40 fases no total (antes eram 10), organizadas em 4 mundos com
+  dificuldade progressiva, cada um terminando em uma fase "chefe".
+
+SOBRE O SALVAMENTO
+O jogo salva todo o progresso (personagem, fases, estrelas, meta de PPM
+e ranking) no seu navegador, vinculado ao usuário e senha criados.
+Isso significa que:
+- O progresso fica salvo mesmo se você fechar a aba ou o navegador.
+- O progresso é local: fica apenas no navegador/computador usado.
+- Se limpar os dados de navegação do navegador, o progresso é apagado.
+- Para jogar em outro computador, seria necessário um servidor —
+  este jogo não usa nenhum servidor externo, é 100% offline.
+
+DICAS PARA MELHORAR
+- No modo de digitação, você só avança para a próxima letra depois de
+  acertar a tecla correta — isso ajuda a memorizar a posição de cada
+  tecla no teclado.
+- No fim de cada fase, o jogo mostra quais teclas você mais errou.
+  Pratique essas teclas especificamente!
+- Aumente a meta de PPM aos poucos, conforme for ficando mais rápido.
+
+Divirta-se e boa prática! ⌨️✨

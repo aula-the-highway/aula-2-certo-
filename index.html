@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TECLA.EXE — Domine o teclado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="crt-overlay"></div>
+<div class="arcade-bg"></div>
+
+<div class="cabinet">
+
+  <div class="marquee-lights" aria-hidden="true">
+    <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <header class="marquee">
+    <div class="marquee-glow"></div>
+    <h1 class="logo">TECLA<span class="dot">.</span>EXE</h1>
+    <p class="tagline">treine os dedos. domine o ranking.</p>
+    <div class="insert-coin">INSIRA A FICHA ► COMECE A JOGAR</div>
+  </header>
+
+  <main id="app">
+
+    <!-- ===================== TELA: AUTENTICAÇÃO ===================== -->
+    <section id="screen-auth" class="screen active">
+      <div class="panel panel-narrow">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="login">ENTRAR</button>
+          <button class="tab-btn" data-tab="register">CRIAR CONTA</button>
+        </div>
+
+        <form id="form-login" class="tab-content active">
+          <label>Usuário
+            <input type="text" id="login-user" autocomplete="username" required maxlength="16">
+          </label>
+          <label>Senha
+            <input type="password" id="login-pass" autocomplete="current-password" required maxlength="24">
+          </label>
+          <p class="form-msg" id="login-msg"></p>
+          <button type="submit" class="btn btn-primary">JOGAR ►</button>
+        </form>
+
+        <form id="form-register" class="tab-content">
+          <label>Escolha um usuário
+            <input type="text" id="reg-user" required maxlength="16" pattern="[A-Za-z0-9_]{3,16}">
+          </label>
+          <label>Crie uma senha
+            <input type="password" id="reg-pass" required maxlength="24" minlength="4">
+          </label>
+          <label>Confirme a senha
+            <input type="password" id="reg-pass2" required maxlength="24" minlength="4">
+          </label>
+          <p class="form-msg" id="reg-msg"></p>
+          <button type="submit" class="btn btn-primary">CRIAR PERSONAGEM ►</button>
+        </form>
+
+        <p class="hint">🔒 seu progresso fica salvo neste navegador, vinculado ao seu usuário e senha, num banco de dados local (<span id="db-status">verificando armazenamento…</span>).</p>
+      </div>
+    </section>
+
+    <!-- ===================== TELA: CRIAÇÃO DE PERSONAGEM ===================== -->
+    <section id="screen-character" class="screen">
+      <div class="panel panel-wide">
+        <h2 class="screen-title">MONTE SEU AVATAR</h2>
+
+        <div class="char-builder">
+          <div class="char-preview-wrap">
+            <canvas id="char-canvas" width="160" height="160" class="char-preview"></canvas>
+          </div>
+
+          <div class="char-options">
+            <div class="option-group">
+              <span class="option-label">Identidade</span>
+              <div class="chip-row" id="gender-row">
+                <button class="chip" data-gender="menino">MENINO</button>
+                <button class="chip" data-gender="menina">MENINA</button>
+                <button class="chip" data-gender="nb">LIVRE</button>
+              </div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Estilo da roupa</span>
+              <div class="chip-row chip-row-wrap" id="style-row"></div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Corte de cabelo</span>
+              <div class="chip-row" id="hairstyle-row"></div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Acessório</span>
+              <div class="chip-row chip-row-wrap" id="accessory-row"></div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Tom de pele</span>
+              <div class="chip-row" id="skin-row"></div>
+            </div>
+
+            <div class="option-group">
+              <span class="option-label">Cor do cabelo</span>
+              <div class="chip-row" id="haircolor-row"></div>
+            </div>
+
+            <button id="btn-confirm-char" class="btn btn-primary">CONFIRMAR ►</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== TELA: MENU PRINCIPAL ===================== -->
+    <section id="screen-menu" class="screen">
+      <div class="panel">
+        <div class="menu-header">
+          <canvas id="menu-avatar" width="72" height="72" class="avatar-small"></canvas>
+          <div>
+            <p class="welcome">Fala, <span id="menu-username">jogador</span>!</p>
+            <p class="submeta" id="menu-substyle">estilo</p>
+          </div>
+        </div>
+
+        <div class="menu-grid">
+          <button class="menu-btn" id="btn-goto-levels">🎮 JOGAR</button>
+          <button class="menu-btn" id="btn-goto-character">👕 PERSONAGEM</button>
+          <button class="menu-btn" id="btn-goto-settings">⚙️ CONFIGURAÇÕES</button>
+          <button class="menu-btn" id="btn-goto-ranking">🏆 RANKING</button>
+        </div>
+
+        <button id="btn-logout" class="btn btn-ghost">sair da conta</button>
+      </div>
+    </section>
+
+    <!-- ===================== TELA: SELEÇÃO DE FASES ===================== -->
+    <section id="screen-levels" class="screen">
+      <div class="panel panel-wide">
+        <div class="row-between">
+          <button class="btn btn-ghost btn-back" data-back="screen-menu">◄ voltar</button>
+          <h2 class="screen-title">FASES</h2>
+          <span class="target-pill">meta: <b id="levels-target">30</b> ppm</span>
+        </div>
+        <div class="levels-grid" id="levels-grid"></div>
+      </div>
+    </section>
+
+    <!-- ===================== TELA: JOGO (DIGITAÇÃO) ===================== -->
+    <section id="screen-game" class="screen">
+      <div class="panel panel-wide">
+        <div class="game-hud">
+          <button class="btn btn-ghost btn-back" data-back="screen-levels">◄ sair</button>
+          <div class="hud-stat"><span class="hud-label">PPM</span><span class="hud-value" id="hud-ppm">0</span></div>
+          <div class="hud-stat"><span class="hud-label">PRECISÃO</span><span class="hud-value" id="hud-acc">100%</span></div>
+          <div class="hud-stat"><span class="hud-label">TEMPO</span><span class="hud-value" id="hud-time">0s</span></div>
+        </div>
+
+        <div class="progress-track">
+          <div class="progress-fill" id="game-progress-fill"></div>
+        </div>
+
+        <div class="type-box" id="type-box"></div>
+
+        <input type="text" id="hidden-input" class="hidden-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+
+        <p class="type-instructions" id="type-instructions">clique aqui e comece a digitar…</p>
+      </div>
+    </section>
+
+    <!-- ===================== TELA: RESULTADO ===================== -->
+    <section id="screen-result" class="screen">
+      <div class="panel panel-narrow">
+        <h2 class="screen-title" id="result-title">FASE CONCLUÍDA!</h2>
+        <div class="stars-row" id="result-stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+
+        <div class="result-stats">
+          <div class="result-stat"><span>PPM</span><b id="result-ppm">0</b></div>
+          <div class="result-stat"><span>Precisão</span><b id="result-acc">0%</b></div>
+          <div class="result-stat"><span>Erros</span><b id="result-errors">0</b></div>
+        </div>
+
+        <div class="weak-keys" id="weak-keys-box">
+          <p class="weak-keys-title">teclas para praticar:</p>
+          <div class="weak-keys-list" id="weak-keys-list"></div>
+        </div>
+
+        <div class="result-actions">
+          <button class="btn btn-ghost" id="btn-result-retry">🔁 repetir</button>
+          <button class="btn btn-primary" id="btn-result-next">próxima fase ►</button>
+        </div>
+        <button class="btn btn-ghost" id="btn-result-levels">voltar às fases</button>
+      </div>
+    </section>
+
+    <!-- ===================== TELA: CONFIGURAÇÕES ===================== -->
+    <section id="screen-settings" class="screen">
+      <div class="panel panel-narrow">
+        <div class="row-between">
+          <button class="btn btn-ghost btn-back" data-back="screen-menu">◄ voltar</button>
+          <h2 class="screen-title">CONFIGURAÇÕES</h2>
+          <span></span>
+        </div>
+
+        <label class="slider-label">
+          meta de velocidade (PPM): <b id="settings-ppm-value">30</b>
+          <input type="range" id="settings-ppm-slider" min="10" max="150" step="5" value="30">
+        </label>
+        <p class="hint">essa meta define quantas estrelas você ganha em cada fase. aumente aos poucos conforme evoluir!</p>
+
+        <div class="ppm-refs">
+          <span>🐢 iniciante: 10–25</span>
+          <span>🚶 intermediário: 30–50</span>
+          <span>🏃 avançado: 55–80</span>
+          <span>⚡ profissional: 85+</span>
+        </div>
+
+        <button id="btn-save-settings" class="btn btn-primary">SALVAR</button>
+      </div>
+    </section>
+
+    <!-- ===================== TELA: RANKING ===================== -->
+    <section id="screen-ranking" class="screen">
+      <div class="panel panel-wide">
+        <div class="row-between">
+          <button class="btn btn-ghost btn-back" data-back="screen-menu">◄ voltar</button>
+          <h2 class="screen-title">🏆 TOP DIGITADORES</h2>
+          <span></span>
+        </div>
+        <table class="ranking-table">
+          <thead>
+            <tr><th>#</th><th>Jogador</th><th>Melhor PPM</th><th>Precisão</th><th>Estilo</th></tr>
+          </thead>
+          <tbody id="ranking-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="cabinet-footer">
+    <span>TECLA.EXE © ARCADE EDITION</span>
+    <span class="blink">●</span>
+  </footer>
+</div>
+
+<script src="db.js"></script>
+<script src="character.js"></script>
+<script src="levels.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
