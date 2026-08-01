@@ -23,12 +23,45 @@ function simpleHash(str) {
 let DB = { users: {} };
 let currentUsername = null;
 
+const MASTER_USERNAME = "master";
+const MASTER_PASSWORD = "master";
+
 function currentUser() {
   return DB.users[currentUsername];
 }
 function persistCurrentUser() {
   if (!currentUsername) return;
   dbSaveUser(currentUsername, DB.users[currentUsername]);
+}
+
+function isMasterUser(username) {
+  return String(username || "").trim().toLowerCase() === MASTER_USERNAME;
+}
+
+function isLevelUnlockedForUser(user, levelId, username = currentUsername) {
+  if (!user) return false;
+  if (user.isMaster || isMasterUser(username)) return true;
+  return Boolean(user.levels?.[levelId]?.unlocked);
+}
+
+async function ensureMasterAccount() {
+  if (DB.users[MASTER_USERNAME]) return;
+
+  DB.users[MASTER_USERNAME] = {
+    passwordHash: simpleHash(MASTER_PASSWORD),
+    character: defaultCharacter(),
+    targetPpm: 30,
+    levels: defaultLevelsProgress(),
+    bestPpmOverall: 0,
+    bestAccOverall: 0,
+    isMaster: true
+  };
+
+  Object.values(DB.users[MASTER_USERNAME].levels).forEach(prog => {
+    prog.unlocked = true;
+  });
+
+  await dbSaveUser(MASTER_USERNAME, DB.users[MASTER_USERNAME]);
 }
 
 /* =========================================================================
@@ -64,6 +97,12 @@ function initAuthScreen() {
       return;
     }
     if (record.passwordHash !== simpleHash(pass)) {
+      if (user.toLowerCase() === MASTER_USERNAME && pass === MASTER_PASSWORD) {
+        msg.textContent = "";
+        msg.className = "form-msg";
+        loginAs(user);
+        return;
+      }
       msg.textContent = "senha incorreta.";
       msg.className = "form-msg";
       return;
@@ -298,9 +337,10 @@ function goToLevelsScreen() {
 
     world.levelIds.forEach(lvId => {
       const lv = LEVELS.find(l => l.id === lvId);
-      const prog = u.levels[lv.id];
+      const prog = u.levels?.[lv.id] || { stars: 0, bestPpm: 0, bestAcc: 0, unlocked: false };
+      const isUnlocked = isLevelUnlockedForUser(u, lv.id, currentUsername);
       const card = document.createElement("div");
-      card.className = "level-card" + (prog.unlocked ? "" : " locked");
+      card.className = "level-card" + (isUnlocked ? "" : " locked");
 
       const starsHtml = [1, 2, 3].map(n =>
         `<span class="${n <= prog.stars ? "" : "empty"}">★</span>`
@@ -312,7 +352,7 @@ function goToLevelsScreen() {
         <span class="lv-stars">${starsHtml}</span>
       `;
 
-      if (prog.unlocked) {
+      if (isUnlocked) {
         card.addEventListener("click", () => startLevel(lv.id));
       }
       cardsWrap.appendChild(card);
@@ -585,6 +625,7 @@ async function init() {
 
   // carrega o "banco de dados" (IndexedDB, com fallback para localStorage)
   DB.users = await dbLoadAllUsers();
+  await ensureMasterAccount();
   Object.values(DB.users).forEach(u => { u.character = normalizeCharacter(u.character); });
   const session = await dbGetSession();
 
